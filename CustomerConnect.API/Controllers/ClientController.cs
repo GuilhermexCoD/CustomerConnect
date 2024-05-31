@@ -1,3 +1,4 @@
+using CustomerConnect.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerConnect.API.Controllers;
@@ -18,7 +19,7 @@ public class ClientController : ControllerBase
     {
         try
         {
-            var client = await _clientService.GetClientByIdAsync(id, true);
+            var client = await _clientService.GetByIdAsync(id);
             if (client == null) 
                 return NoContent();
 

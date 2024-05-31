@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CustomerConnect.Application.Dtos;
+using CustomerConnect.Domain.Entities;
+using CustomerConnect.Domain.Interfaces.Repositories;
 
 namespace CustomerConnect.Application.Interfaces
 {
-    public interface IClientService
+    public interface IClientService : IService<ClientDto, Client, IClientRepository>
     {
+
     }
 }
