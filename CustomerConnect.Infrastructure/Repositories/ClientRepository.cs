@@ -2,13 +2,12 @@
 using CustomerConnect.Domain.Interfaces;
 using CustomerConnect.Domain.Interfaces.Repositories;
 using CustomerConnect.Infrastructure.Base;
+using CustomerConnect.Infrastructure.Context;
 
 namespace CustomerConnect.Infrastructure.Repositories
 {
-    public class ClientRepository : Repository<Client> , IClientRepository
+    public class ClientRepository : Repository<Client>, IClientRepository
     {
-        public ClientRepository(IUnitOfWork uow) : base(uow)
-        {
-        }
+        public ClientRepository(DatabaseContext context) : base(context) { }
     }
 }

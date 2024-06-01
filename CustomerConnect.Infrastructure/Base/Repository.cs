@@ -1,47 +1,44 @@
 ﻿using CustomerConnect.Domain.Entities;
-using CustomerConnect.Domain.Interfaces;
 using CustomerConnect.Domain.Interfaces.Repositories;
+using CustomerConnect.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace CustomerConnect.Infrastructure.Base
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
-        private readonly IDbConnection Connection;
-        private readonly IUnitOfWork Uow;
+        private readonly DatabaseContext _context;
 
-        public Repository(IUnitOfWork uow)
+        public Repository(DatabaseContext context)
         {
-            Uow = uow;
-            Connection = uow.Connection;
+            _context = context;
         }
 
         public virtual async Task DeleteAsync(Guid id)
         {
             var obj = Activator.CreateInstance<TEntity>();
             obj.Id = id;
-            Uow.Context.Set<TEntity>().Remove(obj);
-            await Uow.Context.SaveChangesAsync();
+            _context.Set<TEntity>().Remove(obj);
+            await _context.SaveChangesAsync();
         }
 
         public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
-            return await Uow.Context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public virtual async Task<TEntity> InsertAsync(TEntity entity)
         {
-            var entityEntry = await Uow.Context.Set<TEntity>().AddAsync(entity);
-            await Uow.Context.SaveChangesAsync();
+            var entityEntry = await _context.Set<TEntity>().AddAsync(entity);
+            await _context.SaveChangesAsync();
 
             return entityEntry.Entity;
         }
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            Uow.Context.Set<TEntity>().Update(entity);
-            await Uow.Context.SaveChangesAsync();
+            _context.Set<TEntity>().Update(entity);
+            await _context.SaveChangesAsync();
 
             return entity;
         }
