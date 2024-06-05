@@ -22,6 +22,11 @@ namespace CustomerConnect.Infrastructure.Base
             await _context.SaveChangesAsync();
         }
 
+        public IQueryable<TEntity> GetAll()
+        {
+            return _context.Set<TEntity>().AsQueryable();
+        }
+
         public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
             return await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
@@ -42,5 +47,6 @@ namespace CustomerConnect.Infrastructure.Base
 
             return entity;
         }
+
     }
 }

@@ -4,8 +4,8 @@ using CustomerConnect.Domain.Interfaces.Repositories;
 
 namespace CustomerConnect.Application.Interfaces
 {
-    public interface IClientService : IService<ClientDto, Client, IClientRepository>
+    public interface IPhoneService : IService<PhoneDto, Phone, IPhoneRepository>
     {
-        Task<IEnumerable<ClientDto>> GetAll(bool includePhones = false);
+
     }
 }

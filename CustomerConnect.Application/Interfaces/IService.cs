@@ -5,13 +5,15 @@ using CustomerConnect.Domain.Interfaces.Repositories;
 namespace CustomerConnect.Application.Interfaces
 {
     public interface IService<TDto, TEntity, TRepository>
-                            where TEntity : Entity
                             where TDto : EntityDto
+                            where TEntity : Entity
                             where TRepository : IRepository<TEntity>
     {
-        Task<TEntity> GetByIdAsync(Guid id);
-        Task<TEntity> InsertAsync(TDto dto);
-        Task<TEntity> UpdateAsync(TDto dto);
+        TRepository Repository { get; }
+        Task<IList<TDto>> GetAllAsync();
+        Task<TDto> GetByIdAsync(Guid id);
+        Task<TDto> InsertAsync(TDto dto);
+        Task<TDto> UpdateAsync(TDto dto);
         Task DeleteAsync(Guid id);
     }
 }

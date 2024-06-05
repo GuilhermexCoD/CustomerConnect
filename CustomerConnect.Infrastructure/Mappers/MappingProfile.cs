@@ -9,6 +9,8 @@ namespace CustomerConnect.Infrastructure.Mappers
         public MappingProfile()
         {
             CreateMap<Client, ClientDto>().ReverseMap();
+
+            CreateMap<Phone, PhoneDto>().ReverseMap();
         }
     }
 }

@@ -16,8 +16,4 @@
     <ProjectReference Include="..\CustomerConnect.Domain\CustomerConnect.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="AutoMapper\" />
-  </ItemGroup>
-
 </Project>

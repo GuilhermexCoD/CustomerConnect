@@ -3,6 +3,7 @@ using CustomerConnect.Application.Dtos;
 using CustomerConnect.Application.Interfaces;
 using CustomerConnect.Domain.Entities;
 using CustomerConnect.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace CustomerConnect.Application.Services
 {
@@ -20,54 +21,45 @@ namespace CustomerConnect.Application.Services
             _mapper = mapper;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public TRepository Repository => (TRepository)_repository;
+
+        public virtual async Task DeleteAsync(Guid id)
         {
-            try
-            {
-                await _repository.DeleteAsync(id);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            await _repository.DeleteAsync(id);
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public virtual async Task<IList<TDto>> GetAllAsync()
         {
-            try
-            {
-                return await _repository.GetByIdAsync(id);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var entities = await _repository.GetAll().ToListAsync();
+
+            return _mapper.Map<List<TDto>>(entities);
         }
 
-        public async Task<TEntity> InsertAsync(TDto dto)
+        public virtual async Task<TDto> GetByIdAsync(Guid id)
         {
-            try
-            {
-                var entity = _mapper.Map<TEntity>(dto);
-                return await _repository.InsertAsync(entity);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var entity = await _repository.GetByIdAsync(id);
+
+            return _mapper.Map<TDto>(entity);
         }
 
-        public async Task<TEntity> UpdateAsync(TDto dto)
+        public virtual async Task<TDto> InsertAsync(TDto dto)
         {
-            try
-            {
-                var entity = _mapper.Map<TEntity>(dto);
-                return await _repository.UpdateAsync(entity);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var entity = _mapper.Map<TEntity>(dto);
+
+            entity = await _repository.InsertAsync(entity);
+
+            dto.Id = entity.Id;
+
+            return dto;
+        }
+
+        public virtual async Task<TDto> UpdateAsync(TDto dto)
+        {
+            var entity = _mapper.Map<TEntity>(dto);
+
+            await _repository.UpdateAsync(entity);
+
+            return dto;
         }
     }
 }

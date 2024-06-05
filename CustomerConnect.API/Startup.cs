@@ -1,6 +1,8 @@
 using CustomerConnect.Application.Extensions;
 using Microsoft.OpenApi.Models;
 using CustomerConnect.Infrastructure.Mappers;
+using CustomerConnect.Application.Interfaces;
+using CustomerConnect.Application.Services;
 
 namespace CustomerConnect.API
 {
@@ -19,7 +21,12 @@ namespace CustomerConnect.API
 
             services.AddControllers();
 
+            services.AddCors();
+
             services.RegisterRepositories(Configuration);
+
+            services.AddTransient<IClientService, ClientService>();
+            services.AddTransient<IPhoneService, PhoneService>();
 
             services.AddAutoMapper(typeof(MappingProfile));
 
@@ -44,6 +51,11 @@ namespace CustomerConnect.API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(cors => cors.AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowAnyOrigin()
+            );
 
             app.UseEndpoints(endpoints =>
             {

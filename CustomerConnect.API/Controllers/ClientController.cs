@@ -1,34 +1,36 @@
+using CustomerConnect.Application.Dtos;
 using CustomerConnect.Application.Interfaces;
+using CustomerConnect.Domain.Entities;
+using CustomerConnect.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerConnect.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ClientController : ControllerBase
+public class ClientController : ControllerCRUD<ClientDto, Client, IClientRepository, IClientService>
 {
     private readonly ILogger<ClientController> _logger;
-    private readonly IClientService _clientService;
-    public ClientController(ILogger<ClientController> logger)
+    public ClientController(ILogger<ClientController> logger, IClientService service) : base(service, logger)
     {
         _logger = logger;
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet("all")]
+    public virtual async Task<IActionResult> GetAll([FromQuery] bool includePhones = false)
     {
         try
         {
-            var client = await _clientService.GetByIdAsync(id);
-            if (client == null) 
+            var entity = await _service.GetAll(includePhones);
+            if (entity == null)
                 return NoContent();
 
-            return Ok(client);
+            return Ok(entity);
         }
         catch (Exception ex)
         {
             return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Erro ao tentar recuperar clientes. Erro: {ex.Message}");
+                $"Erro ao tentar recuperar {typeof(Client).Name}. Erro: {ex.Message}");
         }
     }
 }

@@ -15,6 +15,7 @@ namespace CustomerConnect.Application.Extensions
             });
 
             services.AddTransient<IClientRepository, ClientRepository>();
+            services.AddTransient<IPhoneRepository, PhoneRepository>();
         }
     }
 }

@@ -8,5 +8,6 @@ namespace CustomerConnect.Domain.Interfaces.Repositories
         Task<TEntity> InsertAsync(TEntity entity);
         Task<TEntity> UpdateAsync(TEntity entity);
         Task DeleteAsync(Guid id);
+        IQueryable<TEntity> GetAll();
     }
 }

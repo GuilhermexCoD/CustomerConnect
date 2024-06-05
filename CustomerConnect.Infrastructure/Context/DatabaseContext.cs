@@ -10,6 +10,8 @@ namespace CustomerConnect.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ClientMap());
+            modelBuilder.ApplyConfiguration(new PhoneMap());
+
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -1,29 +1,26 @@
-﻿using CustomerConnect.Application.Dtos;
+﻿using AutoMapper;
+using CustomerConnect.Application.Dtos;
 using CustomerConnect.Application.Interfaces;
 using CustomerConnect.Domain.Entities;
+using CustomerConnect.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace CustomerConnect.Application.Services
 {
-    public class ClientService : IClientService
+    public class ClientService : Service<ClientDto, Client, IClientRepository>, IClientService
     {
-        public Task DeleteAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        public ClientService(IClientRepository repository, IMapper mapper) : base(repository, mapper) { }
 
-        public Task<Client> GetByIdAsync(Guid id)
+        public async Task<IEnumerable<ClientDto>> GetAll(bool includePhones = false)
         {
-            throw new NotImplementedException();
-        }
+            List<Client>? clients = null;
 
-        public Task<Client> InsertAsync(ClientDto dto)
-        {
-            throw new NotImplementedException();
-        }
+            if (includePhones)
+                clients = await _repository.GetAll().Include(c => c.Phones).ToListAsync();
+            else
+                clients = await _repository.GetAll().ToListAsync();
 
-        public Task<Client> UpdateAsync(ClientDto dto)
-        {
-            throw new NotImplementedException();
+            return _mapper.Map<List<ClientDto>>(clients);
         }
     }
 }
