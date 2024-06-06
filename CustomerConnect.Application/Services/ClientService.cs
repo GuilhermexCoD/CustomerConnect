@@ -22,5 +22,12 @@ namespace CustomerConnect.Application.Services
 
             return _mapper.Map<List<ClientDto>>(clients);
         }
+
+        public override async Task<ClientDto?> GetByIdAsync(Guid id)
+        {
+            var client = await _repository.GetById(id).Include(c => c.Phones).FirstOrDefaultAsync();
+
+            return _mapper.Map<ClientDto>(client);
+        }
     }
 }

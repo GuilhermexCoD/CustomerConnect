@@ -35,7 +35,7 @@ namespace CustomerConnect.Application.Services
             return _mapper.Map<List<TDto>>(entities);
         }
 
-        public virtual async Task<TDto> GetByIdAsync(Guid id)
+        public virtual async Task<TDto?> GetByIdAsync(Guid id)
         {
             var entity = await _repository.GetByIdAsync(id);
 
@@ -53,6 +53,15 @@ namespace CustomerConnect.Application.Services
             return dto;
         }
 
+        public virtual async Task<IEnumerable<TDto>> InsertRangeAsync(IEnumerable<TDto> dtos)
+        {
+            var entities = _mapper.Map<IEnumerable<TEntity>>(dtos);
+
+            await _repository.InsertRangeAsync(entities);
+
+            return dtos;
+        }
+
         public virtual async Task<TDto> UpdateAsync(TDto dto)
         {
             var entity = _mapper.Map<TEntity>(dto);
@@ -60,6 +69,15 @@ namespace CustomerConnect.Application.Services
             await _repository.UpdateAsync(entity);
 
             return dto;
+        }
+
+        public virtual async Task<IEnumerable<TDto>> UpdateRangeAsync(IEnumerable<TDto> dtos)
+        {
+            var entities = _mapper.Map<IEnumerable<TEntity>>(dtos);
+
+            entities = await _repository.UpdateRangeAsync(entities);
+
+            return _mapper.Map<IEnumerable<TDto>>(entities);
         }
     }
 }

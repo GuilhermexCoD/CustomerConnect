@@ -3,7 +3,6 @@ using CustomerConnect.Application.Interfaces;
 using CustomerConnect.Domain.Entities;
 using CustomerConnect.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CustomerConnect.API.Controllers
 {
@@ -76,6 +75,25 @@ namespace CustomerConnect.API.Controllers
             }
         }
 
+        [HttpPost("range")]
+        public virtual async Task<IActionResult> InsertRange(IEnumerable<TDto> dtos)
+        {
+            try
+            {
+                var entities = await _service.InsertRangeAsync(dtos);
+                if (entities == null)
+                    return NoContent();
+
+                var ids = entities.Select(x => x.Id).ToList();
+                return Created($"{this.HttpContext}/{ids}", entities);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar recuperar {typeof(TEntity).Name}. Erro: {ex.Message}");
+            }
+        }
+
         [HttpPut("{id}")]
         public virtual async Task<IActionResult> Update(Guid id, TDto dto)
         {
@@ -84,6 +102,22 @@ namespace CustomerConnect.API.Controllers
                 var entity = await _service.UpdateAsync(dto);
 
                 return Ok(entity);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar recuperar {typeof(TEntity).Name}. Erro: {ex.Message}");
+            }
+        }
+
+        [HttpPut("range")]
+        public virtual async Task<IActionResult> UpdateRange(IEnumerable<TDto> dtos)
+        {
+            try
+            {
+                var entities = await _service.UpdateRangeAsync(dtos);
+
+                return Ok(entities);
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
 using CustomerConnect.Domain.Interfaces.Repositories;
 using CustomerConnect.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace CustomerConnect.Infrastructure.Base
 {
@@ -27,9 +28,14 @@ namespace CustomerConnect.Infrastructure.Base
             return _context.Set<TEntity>().AsQueryable();
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(Guid id)
+        public virtual async Task<TEntity?> GetByIdAsync(Guid id)
         {
             return await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public virtual IQueryable<TEntity> GetById(Guid id)
+        {
+            return _context.Set<TEntity>().Where(x => x.Id == id).AsQueryable();
         }
 
         public virtual async Task<TEntity> InsertAsync(TEntity entity)
@@ -48,5 +54,40 @@ namespace CustomerConnect.Infrastructure.Base
             return entity;
         }
 
+        public virtual async Task<IEnumerable<TEntity>> InsertRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _context.Set<TEntity>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+
+            return entities;
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> UpdateRangeAsync(IEnumerable<TEntity> entities)
+        {
+            var groupEntities = entities.GroupBy(x => x.Id == Guid.Empty);
+            var insertEntities = groupEntities.FirstOrDefault(x => x.Key)?.ToList();
+            var updateEntities = groupEntities.FirstOrDefault(x => !x.Key)?.ToList();
+
+            var resultEntities = new List<TEntity>(entities.Count());
+
+            if (insertEntities != null)
+            {
+                foreach (var entity in insertEntities)
+                {
+                    var insertResult = await InsertAsync(entity);
+                    resultEntities.Add(insertResult);
+                }
+            }
+
+            if (updateEntities != null)
+            {
+                _context.Set<TEntity>().UpdateRange(updateEntities);
+                resultEntities.AddRange(updateEntities);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return resultEntities;
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CustomerConnect.Domain.Entities;
-using CustomerConnect.Domain.Interfaces;
 using CustomerConnect.Domain.Interfaces.Repositories;
 using CustomerConnect.Infrastructure.Base;
 using CustomerConnect.Infrastructure.Context;

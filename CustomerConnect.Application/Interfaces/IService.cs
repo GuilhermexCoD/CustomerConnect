@@ -11,9 +11,11 @@ namespace CustomerConnect.Application.Interfaces
     {
         TRepository Repository { get; }
         Task<IList<TDto>> GetAllAsync();
-        Task<TDto> GetByIdAsync(Guid id);
+        Task<TDto?> GetByIdAsync(Guid id);
         Task<TDto> InsertAsync(TDto dto);
+        Task<IEnumerable<TDto>> InsertRangeAsync(IEnumerable<TDto> dtos);
         Task<TDto> UpdateAsync(TDto dto);
+        Task<IEnumerable<TDto>> UpdateRangeAsync(IEnumerable<TDto> dtos);
         Task DeleteAsync(Guid id);
     }
 }
